@@ -30,18 +30,21 @@
     <h2 class="text-center mt-5">No data available</h2>
   </div>
 </div>
+<!-- The following script handles fetching and rendering product data from the server -->
 <script>
 $(document).ready(function() {
+  // Function to fetch data from the server
   function fetchData() {
     $.ajax({
-      url: '/products',
-      method: 'GET',
-      dataType: 'json',
+      url: '/products', // URL for the server API endpoint
+      method: 'GET', // HTTP method
+      dataType: 'json', // Expected data type from the server
     })
     .done(
       function(response) {
+        // If the request is successful and the response status is 'success'
         if (response.status === 'success') {
-          renderData(response.products);
+          renderData(response.products); // Render the fetched data
         }
       })
     .fail(function() {
@@ -49,6 +52,7 @@ $(document).ready(function() {
     });
   }
 
+  // Function to render the data in HTML
   function renderData(data) {
     let html = '<table class="table table-striped">';
     html += '<thead><tr><th>Product Name</th><th>Quantity in Stock</th><th>Price per Item</th><th>Date and Time</th><th>Total Value</th></tr></thead>';
@@ -74,26 +78,27 @@ $(document).ready(function() {
     $('#data-container').html(html);
   }
 
+  // Event handler for the form submission
   $('#product-form').on('submit', function(e) {
     e.preventDefault();
     $.ajax({
-      url: '/products',
-      method: 'POST',
-      data: $(this).serialize(),
-      dataType: 'json',
+      url: '/products', // URL for the server API endpoint
+      method: 'POST', // HTTP method
+      data: $(this).serialize(), // Form data to be sent
+      dataType: 'json', // Expected data type from the server
       headers: {
-        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // CSRF token for security
       },
       success: function(response) {
         if (response.status === 'success') {
-          fetchData();
-          $('#product-form')[0].reset();
+          fetchData(); // Fetch and render the updated data
+          $('#product-form')[0].reset(); // Reset the form
         }
       }
     });
   });
 
-  fetchData();
+  fetchData(); // Initial data fetch and render
 });
 </script>
 </body>
